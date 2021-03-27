@@ -1,12 +1,38 @@
 import React from 'react'
 import BookShelf from './BookShelf'
+import * as BooksAPI from './BooksAPI'
 
 class BooksList extends React.Component {
 
-    render() {
-        const { books } = this.props;
+    state = {
+        books: []
+    }
 
-        var shelves = {};
+    componentDidMount() {
+        BooksAPI.getAll().then((books) => {
+            this.setState({ books })
+        })
+    }
+
+    updateBook = (book, shelf) => {
+        BooksAPI.update(book, shelf).then((updatedBooks) => {
+            const currentBooks = [...this.state.books];
+            let targetBooks = currentBooks.map((b) => {
+                if(b.id === book.id && b.shelf === book.shelf){
+                    b.shelf = shelf;
+                }
+                return b;
+            })
+            this.setState({ books: targetBooks });
+        })
+    }
+
+
+
+    render() {
+
+        const books = this.state.books;
+        const shelves = {};
 
         books.forEach(book => {
             const shelfID = book.shelf;
@@ -15,21 +41,19 @@ class BooksList extends React.Component {
             else
                 shelves[shelfID] = [book];
         });
-        /*Object.keys(shelves).map((name, books) => {
-            console.log(shelves[name]);
-        })*/
+
         return (
             <div className="list-books">
                 <div className="list-books-title">
                     <h1>MyReads</h1>
                 </div>
                 <div className="list-books-content">
-                    {Object.keys(shelves).map((name, books) => (
-                        <BookShelf key={name} name={name} books={shelves[name]}></BookShelf>
+                    {Object.keys(shelves).map((name) => (
+                        <BookShelf key={name} onUpdateBook={this.updateBook} name={name} books={shelves[name]}></BookShelf>
                     ))}
                 </div>
                 <div className="open-search">
-                    <button onClick={() => this.setState({ showSearchPage: true })}>Add a book</button>
+                    <button>Add a book</button>
                 </div>
             </div>
         )
