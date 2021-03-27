@@ -16,7 +16,7 @@ class BookShelf extends React.Component {
                     <h2 className="bookshelf-title">{finalName}</h2>
                     <div className="bookshelf-books">
                         <ol className="books-grid">
-                            {books.map((book) => (
+                            {books.length > 0 && books.map((book) => (
                                 <Book key={book.id} book={book} onUpdateBook={onUpdateBook}></Book>
                             ))}
                         </ol>
