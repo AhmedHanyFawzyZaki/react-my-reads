@@ -1,6 +1,7 @@
 import React from 'react'
 import BookShelf from './BookShelf'
 import * as BooksAPI from './BooksAPI'
+import { Link } from 'react-router-dom'
 
 class BooksList extends React.Component {
 
@@ -18,7 +19,7 @@ class BooksList extends React.Component {
         BooksAPI.update(book, shelf).then((updatedBooks) => {
             const currentBooks = [...this.state.books];
             let targetBooks = currentBooks.map((b) => {
-                if(b.id === book.id && b.shelf === book.shelf){
+                if (b.id === book.id && b.shelf === book.shelf) {
                     b.shelf = shelf;
                 }
                 return b;
@@ -53,7 +54,10 @@ class BooksList extends React.Component {
                     ))}
                 </div>
                 <div className="open-search">
-                    <button>Add a book</button>
+                    <Link
+                        to='/search'
+                        className='open-search'
+                    >Add a book</Link>
                 </div>
             </div>
         )
