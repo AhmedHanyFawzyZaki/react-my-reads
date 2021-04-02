@@ -1,38 +1,13 @@
 import React from 'react'
 import BookShelf from './BookShelf'
-import * as BooksAPI from './BooksAPI'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types';
 
 class BooksList extends React.Component {
 
-    state = {
-        books: []
-    }
-
-    componentDidMount() {
-        BooksAPI.getAll().then((books) => {
-            this.setState({ books })
-        })
-    }
-
-    updateBook = (book, shelf) => {
-        BooksAPI.update(book, shelf).then((updatedBooks) => {
-            const currentBooks = [...this.state.books];
-            let targetBooks = currentBooks.map((b) => {
-                if (b.id === book.id && b.shelf === book.shelf) {
-                    b.shelf = shelf;
-                }
-                return b;
-            })
-            this.setState({ books: targetBooks });
-        })
-    }
-
-
-
     render() {
 
-        const books = this.state.books;
+        const books = this.props.books;
         const shelves = {};
 
         books.forEach(book => {
@@ -50,7 +25,7 @@ class BooksList extends React.Component {
                 </div>
                 <div className="list-books-content">
                     {Object.keys(shelves).map((name) => (
-                        <BookShelf key={name} onUpdateBook={this.updateBook} name={name} books={shelves[name]}></BookShelf>
+                        name !== "none" && <BookShelf key={name} onUpdateBook={this.props.updateBook} name={name} books={shelves[name]}></BookShelf>
                     ))}
                 </div>
                 <div className="open-search">
@@ -64,5 +39,10 @@ class BooksList extends React.Component {
     }
 
 }
+
+BooksList.propTypes = {
+    books: PropTypes.array.isRequired,
+    updateBook: PropTypes.func.isRequired
+};
 
 export default BooksList
